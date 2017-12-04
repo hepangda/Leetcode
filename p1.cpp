@@ -13,7 +13,18 @@ return [0, 1].
 */
 class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        
+    vector<int> twoSum(vector<int>& nums, int target) {
+        map<int, int> exist;
+        vector<int> ret { 0, 1 };
+
+        for (int i = 0; i < nums.size(); i++) { 
+            int comp = target - nums[i];
+            if (exist[comp] != 0) {
+                ret[0] = exist[comp] - 1;
+                ret[1] = i;
+                return ret;
+            }
+            exist[nums[i]] = i + 1;
+        }
     }
 };
