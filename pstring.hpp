@@ -113,6 +113,9 @@ public:
     /** @constructor 构建一个空字符串 */
     pstring();
 
+    /** @destructor 回收字符串资源 */
+    ~pstring();
+
     /** @constructor 构造由指定C风格字符串构成的字符串
      *  @param st {const char *} 指定C风格字符串
      */
@@ -531,36 +534,48 @@ public:
      *  @return {bool} 是否相等
      */
     bool operator==(const pstring &other) const;
+    bool operator==(const char *other) const;
+    friend bool operator==(const char *cstr, const pstring &str);
 
     /** 比较本串与other串，返回本串是否不等于other串
      *  @param other {const pstring &} 要比较的串
      *  @return {bool} 是否不等
      */
     bool operator!=(const pstring &other) const;
+    bool operator!=(const char *other) const;
+    friend bool operator!=(const char *cstr, const pstring &str);
 
     /** 比较本串与other串，返回本串是否小于other串
      *  @param other {const pstring &} 要比较的串
      *  @return {bool} 是否小于other串
      */
     bool operator<(const pstring &other) const;
+    bool operator<(const char *other) const;
+    friend bool operator<(const char *cstr, const pstring &str);
 
     /** 比较本串与other串，返回本串是否大于other串
      *  @param other {const pstring &} 要比较的串
      *  @return {bool} 是否大于other串
      */
     bool operator>(const pstring &other) const;
+    bool operator>(const char *other) const;
+    friend bool operator>(const char *cstr, const pstring &str);
 
     /** 比较本串与other串，返回本串是否小于等于other串
      *  @param other {const pstring &} 要比较的串
      *  @return {bool} 是否小于等于other串
      */
     bool operator<=(const pstring &other) const;
+    bool operator<=(const char *other) const;
+    friend bool operator<=(const char *cstr, const pstring &str);
 
     /** 比较本串与other串，返回本串是否大于等于other串
      *  @param other {const pstring &} 要比较的串
      *  @return {bool} 是否大于等于other串
      */
     bool operator>=(const pstring &other) const;
+    bool operator>=(const char *other) const;
+    friend bool operator>=(const char *cstr, const pstring &str);
 
     friend std::ostream &operator<<(std::ostream &out, const pstring &str);
     friend std::istream &operator>>(std::istream &in, const pstring &str);
@@ -580,6 +595,11 @@ pstring::pstring()
 {
     _length = 0;
     _data = new char[DEFAULT_CAPACITY];
+}
+
+pstring::~pstring()
+{
+    delete[] _data;
 }
 
 pstring::pstring(const char *s)
@@ -1116,7 +1136,6 @@ pstring pstring::operator+(const char rhch)
     return pstring(*this).append(rhch);
 }
 
-
 bool pstring::operator==(const pstring &other) const
 {
     return compare(other) == 0;
@@ -1145,6 +1164,66 @@ bool pstring::operator>=(const pstring &other) const
 bool pstring::operator<=(const pstring &other) const
 {
     return compare(other) <= 0;
+}
+
+bool pstring::operator==(const char *other) const
+{
+    return compare(other) == 0;
+}
+
+bool pstring::operator!=(const char *other) const
+{
+    return compare(other) != 0;
+}
+
+bool pstring::operator>(const char *other) const
+{
+    return compare(other) > 0;
+}
+
+bool pstring::operator<(const char *other) const
+{
+    return compare(other) < 0;
+}
+
+bool pstring::operator>=(const char *other) const
+{
+    return compare(other) >= 0;
+}
+
+bool pstring::operator<=(const char *other) const
+{
+    return compare(other) <= 0;
+}
+
+bool operator==(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) == 0;
+}
+
+bool operator!=(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) != 0;
+}
+
+bool operator>(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) > 0;
+}
+
+bool operator<(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) < 0;
+}
+
+bool operator>=(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) >= 0;
+}
+
+bool operator<=(const char *cstr, const pstring &str) 
+{
+    return str.compare(cstr) <= 0;
 }
 
 std::ostream &operator<<(std::ostream& out, const pstring &str)
