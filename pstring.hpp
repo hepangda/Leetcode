@@ -36,6 +36,38 @@ private:
         }
     };
 
+    // 任意常量迭代器类型
+    template<typename FN>
+    struct any_const_iterator: any_iterator<FN> {
+    private:
+        char *p;
+    public:
+        any_const_iterator(): p(nullptr) {}
+        any_const_iterator(char *p): p(p) {}
+
+        const char &operator *()
+        {
+            return *p;
+        }
+
+        const char *operator ->()
+        {
+            return p;
+        }
+
+        bool operator!=(const any_const_iterator& rhs) const
+        {
+            return p != rhs.p;
+        }
+
+        any_const_iterator &operator ++()
+        {
+            FN f;
+            p = f(p);
+            return *this;
+        }
+    };
+
     // 正向迭代器函数
     struct FNIterator {
         char *operator()(char *p)
@@ -57,10 +89,10 @@ public:
     typedef unsigned int size_type;
     /** @type iterator 字符串内容迭代器 */
     typedef any_iterator<FNIterator> iterator;
-    typedef const iterator const_iterator;
+    typedef any_const_iterator<FNIterator> const_iterator;
     /** @type reverse_iterator 字符串内容逆向迭代器 */
     typedef any_iterator<FNReverseIterator> reverse_iterator;
-    typedef const reverse_iterator const_reverse_iterator;
+    typedef any_const_iterator<FNReverseIterator> const_reverse_iterator;
 private:    
     // 存储默认长度
     static const size_type DEFAULT_CAPACITY = 10;
@@ -253,7 +285,7 @@ public:
      *  @param new_cap 新的空间的参考值
      *  @return {void}
      */
-    void reverse(size_type new_cap = 0);
+    void reserve(size_type new_cap = 0);
 
     /** 返回已经为string分配空间的字符数。
      *  @return {size_type} 表示已分配的字符数
@@ -740,7 +772,7 @@ pstring::size_type pstring::max_size() const
     return npos;
 }
 
-void pstring::reverse(pstring::size_type new_cap) 
+void pstring::reserve(pstring::size_type new_cap) 
 {
     if (new_cap > capacity()) {
         _capacity = new_cap + DEFAULT_CAPACITY;
@@ -786,7 +818,7 @@ pstring &pstring::insert(pstring::size_type index, pstring::size_type count, cha
     index = (index < _length) ? index : _length;
     int idx = index;
     if (_length + count >= capacity())
-        reverse(_length);
+        reserve(_length);
 
     for (int i = _length; i >= idx; i--) {
         _data[i + count] = _data[i];
@@ -810,7 +842,7 @@ pstring &pstring::insert(pstring::size_type index, const char *s, pstring::size_
     index = (index < _length) ? index : _length;
     int idx = index;
     if (_length + count >= capacity())
-        reverse(_length);
+        reserve(_length);
 
     for (int i = _length; i >= idx; i--) {
         _data[i + count] = _data[i];
@@ -873,7 +905,7 @@ pstring &pstring::append(const pstring &str)
 pstring &pstring::append(const char *s, pstring::size_type count)
 {
     if (_length + count >= capacity())
-        reverse(_length + count);
+        reserve(_length + count);
 
     for (int i = 0; i < count; i++) {
         _data[_length + i] = s[i];
@@ -1036,7 +1068,7 @@ void pstring::resize(size_type count, char ch)
 {
     if (count > capacity()) {
         int orisize = capacity();
-        reverse(count);
+        reserve(count);
         if (ch == '\0')
             return;
         for (int i = orisize; i < capacity(); i++) {
