@@ -13,12 +13,12 @@ private:
         any_iterator(): p(nullptr) {}
         any_iterator(char *p): p(p) {}
 
-        char &operator *()
+        char &operator*()
         {
             return *p;
         }
 
-        char *operator ->()
+        char *operator->()
         {
             return p;
         }
@@ -28,7 +28,7 @@ private:
             return p != rhs.p;
         }
 
-        any_iterator &operator ++()
+        any_iterator &operator++()
         {
             FN f;
             p = f(p);
@@ -38,19 +38,19 @@ private:
 
     // 任意常量迭代器类型
     template<typename FN>
-    struct any_const_iterator: any_iterator<FN> {
+    struct any_const_iterator {
     private:
         char *p;
     public:
         any_const_iterator(): p(nullptr) {}
         any_const_iterator(char *p): p(p) {}
 
-        const char &operator *()
+        const char &operator*()
         {
             return *p;
         }
 
-        const char *operator ->()
+        const char *operator->()
         {
             return p;
         }
@@ -60,7 +60,7 @@ private:
             return p != rhs.p;
         }
 
-        any_const_iterator &operator ++()
+        any_const_iterator &operator++()
         {
             FN f;
             p = f(p);
