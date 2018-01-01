@@ -619,6 +619,9 @@ pstring::pstring(const char ch, int count)
 
 pstring &pstring::assign(const pstring &st)
 {
+    if (this == &st)
+        return *this;
+
     if (_data != nullptr)
         delete[] _data;
 
