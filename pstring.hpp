@@ -508,6 +508,27 @@ public:
      */
     void swap(pstring &other) noexcept;
 
+    /** 在字符串中查找其他字符串
+     *  @param st {const char *} 要查找的串
+     *  @param from {size_type} 从何处开始查找
+     *  @return {size_type} 串的位置，不存在则返回npos
+     */
+    size_type find(const char *st, size_type from = 0);
+
+    /** 在字符串中查找其他字符串
+     *  @param st {const pstring &} 要查找的串
+     *  @param from {size_type} 从何处开始查找
+     *  @return {size_type} 串的位置，不存在则返回npos
+     */
+    size_type find(const pstring &st, size_type from = 0);
+
+    /** 在字符串中查找其他字符
+     *  @param st {const char} 要查找的字符
+     *  @param from {size_type} 从何处开始查找
+     *  @return {size_type} 字符的位置，不存在则返回npos
+     */
+    size_type find(const char ch, size_type from = 0);
+
     /** 生成两个字符串前后连接的一个新字符串
      *  @param lhs {const pstring &lhs} 位于新串前方的串
      *  @param rhs {const pstring &lhs} 位于新串后方的串
@@ -1240,6 +1261,42 @@ std::istream &operator>>(std::istream &in, pstring &str)
     in >> buf;
     str.assign(buf);
     return in;
+}
+
+pstring::size_type pstring::find(const char *st, pstring::size_type from)
+{
+    auto strncmp = [](const char *a, const char *b, int n) -> bool
+    {
+        for (int i = 0; i < n; i++) {
+            if (*a != *b)
+                return false;
+            a++, b++;
+        }
+        return true;
+    };
+
+    int len = count_cstring(st);
+    for (int i = from; i < _length - len; i++) {
+        if (strncmp(_data + i, st, len))
+            return i;
+    }
+
+    return npos;
+}
+
+pstring::size_type pstring::find(const pstring &st, pstring::size_type from)
+{
+    return find(st.data(), from);
+}
+
+pstring::size_type pstring::find(const char ch, pstring::size_type from)
+{
+    for (int i = from; i < _length; i++) {
+        if (_data[i] == ch)
+            return i;
+    }
+
+    return npos;
 }
 
 #endif // !__HEADER__PSTRING_
