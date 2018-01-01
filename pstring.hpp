@@ -1276,7 +1276,7 @@ pstring::size_type pstring::find(const char *st, pstring::size_type from)
     };
 
     int len = count_cstring(st);
-    for (int i = from; i < _length - len; i++) {
+    for (int i = from; i < _length - len + 1; i++) {
         if (strncmp(_data + i, st, len))
             return i;
     }
